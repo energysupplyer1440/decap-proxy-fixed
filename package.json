@@ -1,0 +1,12 @@
+{
+  "name": "decap-proxy-fixed",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "simple-oauth2": "^5.1.0"
+  }
+}
