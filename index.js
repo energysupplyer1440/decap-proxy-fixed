@@ -41,12 +41,29 @@ app.get('/callback', async (req, res) => {
       redirect_uri: `https://${req.hostname}/callback?provider=github`,
     });
     const token = result.access_token;
-    res.send(`<!DOCTYPE html><html><head><script>
-      window.opener.postMessage('authorization:github:success:${JSON.stringify({ token })}', '*');
-      window.addEventListener('message', function() {
-        window.opener.postMessage('authorizing:github', '*');
-      });
-    </script></head><body><p>Authorizing Decap...</p></body></html>`);
+
+    // Popup communication: wait for parent to send message, then send token back
+    res.send(`<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Authorizing...</title>
+</head>
+<body>
+  <p>Authorizing Decap...</p>
+  <script>
+    var token = ${JSON.stringify(token)};
+    function sendMessage() {
+      window.opener.postMessage('authorization:github:success:' + JSON.stringify({ token: token }), '*');
+    }
+    window.addEventListener('message', function() {
+      sendMessage();
+      window.close();
+    });
+    window.opener.postMessage('authorizing:github', '*');
+  </script>
+</body>
+</html>`);
   } catch (e) {
     res.status(500).send('Auth failed: ' + e.message);
   }
