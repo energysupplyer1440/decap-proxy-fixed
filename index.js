@@ -40,7 +40,8 @@ app.get('/callback', async (req, res) => {
       code,
       redirect_uri: `https://${req.hostname}/callback?provider=github`,
     });
-    const token = result.access_token;
+    const accessTokenData = result.token;
+    const token = accessTokenData.access_token;
 
     // Popup communication: wait for parent to send message, then send token back
     res.send(`<!DOCTYPE html>
